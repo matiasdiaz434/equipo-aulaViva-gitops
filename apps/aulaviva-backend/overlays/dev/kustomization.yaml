@@ -10,6 +10,7 @@ resources:
 patches:
   - path: deployment-patch.yaml
   - path: hpa-patch.yaml
+  - path: ingress-patch.yaml
 
 images:
   - name: ghcr.io/merinobranco10/equipo-aulaviva-backend
