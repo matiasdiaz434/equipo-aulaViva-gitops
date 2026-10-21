@@ -306,7 +306,61 @@ Los pods deben estar `Running` y listos, los deployments deben tener sus réplic
 
 El HPA requiere métricas disponibles para calcular el uso de CPU y memoria. Si `kubectl top` falla, revisar la instalación de Metrics Server y los eventos del HPA.
 
-## 10. Acceder a las aplicaciones mediante Ingress
+## 10. Rollback mediante reversión de commit
+
+El rollback permite recuperar una configuración anterior del sistema revirtiendo el commit que introdujo un cambio. En este proyecto, Git es la fuente de verdad y Argo CD sincroniza los recursos de Kubernetes con la configuración declarada en el repositorio.
+
+### 10.1 Identificar el commit
+
+Desde la raíz del repositorio GitOps, consultar el historial:
+
+```bash
+git log --oneline
+```
+
+Identificar el hash del commit que introdujo el cambio que se desea revertir.
+
+### 10.2 Revertir el cambio
+
+Ejecutar:
+
+```bash
+git revert <HASH_COMMIT>
+```
+
+Reemplazar `<HASH_COMMIT>` por el hash real del commit que se desea revertir. Este comando crea un nuevo commit que deshace los cambios seleccionados sin reescribir el historial.
+
+### 10.3 Publicar la reversión
+
+Subir el nuevo commit al repositorio remoto:
+
+```bash
+git push origin main
+```
+
+### 10.4 Verificar la recuperación
+
+Consultar el estado de las aplicaciones Argo CD:
+
+```bash
+kubectl get applications -n argocd
+```
+
+Comprobar los recursos del entorno afectado:
+
+```bash
+kubectl get deployments -n equipo-aulaviva-dev
+kubectl get deployments -n equipo-aulaviva-prod
+```
+
+Verificar también que la configuración del recurso afectado corresponda al estado anterior esperado.
+
+### 10.5 Consideraciones por entorno
+
+- **Desarrollo (`dev`):** Argo CD debe detectar la reversión y sincronizarla automáticamente, de acuerdo con la política configurada.
+- **Producción (`prod`):** la reversión debe revisarse y sincronizarse manualmente, de acuerdo con la política actual de
+
+## 11. Acceder a las aplicaciones mediante Ingress
 
 Los hosts definidos para el proyecto son:
 
@@ -338,7 +392,7 @@ Después, probar desde el navegador:
 
 Estas direcciones dependen de que el controlador Ingress esté listo, los puertos estén mapeados y los recursos Ingress apunten a los servicios correctos. Si no funcionan, comprobar primero el estado del controlador y la configuración de red del clúster.
 
-## 11. Imagen de contenedor y GHCR
+## 12. Imagen de contenedor y GHCR
 
 El backend se despliega utilizando una imagen publicada en GitHub Container Registry (GHCR).
 
@@ -354,7 +408,7 @@ Reemplazar `<DIGEST>` por el digest real de la imagen publicada. No se debe util
 
 Si el paquete GHCR es privado, Kubernetes necesita credenciales válidas mediante un `imagePullSecret` configurado en el namespace correspondiente. No almacenar tokens ni contraseñas en texto plano en el repositorio GitOps.
 
-## 12. Solución de problemas
+## 13. Solución de problemas
 
 ### Los pods no inician
 
@@ -408,7 +462,7 @@ kubectl get pods -n equipo-aulaviva-prod
 
 Comprobar el host, el puerto, el servicio de destino, los mapeos de puertos de `kind` y las entradas del archivo `hosts`.
 
-## 13. Buenas prácticas de seguridad
+## 14. Buenas prácticas de seguridad
 
 - No versionar secretos, tokens ni contraseñas.
 - Usar imágenes versionadas y fijadas por digest.
@@ -419,13 +473,13 @@ Comprobar el host, el puerto, el servicio de destino, los mapeos de puertos de `
 - Mantener las versiones de las herramientas documentadas y actualizadas.
 - Proteger el acceso a Argo CD y a los paquetes privados de GHCR.
 
-## 14. Limitaciones del entorno local
+## 15. Limitaciones del entorno local
 
 El entorno `kind` sirve para desarrollar, probar y demostrar el flujo GitOps. No representa por sí solo una infraestructura de producción de alta disponibilidad.
 
 En un entorno real deben evaluarse la disponibilidad del clúster, el almacenamiento persistente, la gestión de secretos, los certificados TLS, el monitoreo, las copias de seguridad, la seguridad de red y los recursos necesarios para soportar la carga.
 
-## 15. Referencias oficiales
+## 16. Referencias oficiales
 
 - Docker Desktop: [https://docs.docker.com/desktop/](https://docs.docker.com/desktop/)
 - kind: [https://kind.sigs.k8s.io/](https://kind.sigs.k8s.io/)
