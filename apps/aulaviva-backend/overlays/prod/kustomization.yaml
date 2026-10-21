@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: equipo-aulaviva-prod
+
+resources:
+  - ../../base
+
+patches:
+  - path: deployment-patch.yaml
+
+images:
+  - name: ghcr.io/merinobranco10/equipo-aulaviva-backend
+  - digest: sha256:547fcf2220a3158ddfe03eab577b97c2b01a6f033eab046a7bd85b29814e7508
