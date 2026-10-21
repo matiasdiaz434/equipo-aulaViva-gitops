@@ -3,14 +3,9 @@ kind: Deployment
 metadata:
   name: aulaviva-backend
 spec:
-  selector:
-    matchLabels:
-      app: aulaviva-backend
   template:
-    metadata:
-      labels:
-        app: aulaviva-backend
-    containers:
+    spec:
+      containers:
         - name: backend
           resources:
             requests:
