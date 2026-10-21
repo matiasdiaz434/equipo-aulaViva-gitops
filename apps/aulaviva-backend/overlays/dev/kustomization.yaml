@@ -17,4 +17,4 @@ images:
   - digest: sha256:c914d8112cac2cafed01b61682459d870bea657aecf2bc531b357f36e29bb356
   
 commonAnnotations:
-  gitops-test: "prueba-2026-10-21"
+  gitops-test: "prueba-automatica-2"
