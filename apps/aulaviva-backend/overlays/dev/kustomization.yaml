@@ -6,6 +6,7 @@ namespace: equipo-aulaviva-dev
 resources:
   - ../../base
 
+
 patches:
   - path: deployment-patch.yaml
   - path: hpa-patch.yaml
